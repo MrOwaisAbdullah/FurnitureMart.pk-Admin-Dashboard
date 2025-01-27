@@ -2,7 +2,7 @@ import { clerkMiddleware } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 export default clerkMiddleware(async (auth, req) => {
-  const publicRoutes = ["/"]; // "/" is now public and serves as the login landing page
+  const publicRoutes = ["/"];
   const { userId, sessionId } = await auth();
 
   // Allow public routes to be accessed without authentication
