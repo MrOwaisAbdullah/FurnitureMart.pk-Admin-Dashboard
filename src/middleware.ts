@@ -2,7 +2,7 @@ import { clerkMiddleware } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 export default clerkMiddleware(async (auth, req) => {
-  const publicRoutes = ["/"];
+  const publicRoutes = ["/"]; 
   const { userId, sessionId } = await auth();
 
   // Allow public routes to be accessed without authentication
@@ -10,17 +10,19 @@ export default clerkMiddleware(async (auth, req) => {
     return NextResponse.next();
   }
 
-  // If user is not authenticated, redirect to the login landing page
+  // Redirect unauthenticated users to login
   if (!userId || !sessionId) {
+    console.log("Redirecting to /");
     return NextResponse.redirect("/");
   }
 
-  return NextResponse.next(); // Allow access to protected routes if authenticated
+  console.log("Access granted to protected route");
+  return NextResponse.next(); // Allow access if authenticated
 });
 
 export const config = {
   matcher: [
-    "/((?!.*\\..*|_next).*)", // Skip static files and _next internals
+    "/((?!.*\\..*|_next).*)", // Match all routes except static files and _next
     "/(api|trpc)(.*)",        // Match API routes
   ],
 };
