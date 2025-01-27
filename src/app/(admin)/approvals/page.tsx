@@ -1,27 +1,27 @@
-import { client } from "@/sanity/lib/client";
-import { StaticImport } from "next/dist/shared/lib/get-img-props";
-import Image from "next/image";
+// import { client } from "@/sanity/lib/client";
+// import { StaticImport } from "next/dist/shared/lib/get-img-props";
+// import Image from "next/image";
 
 export default async function ApprovalsPage() {
-  const pendingSellers = await client.fetch(`
-    *[_type == "seller" && isApproved == false] {
-      _id,
-      name,
-      email,
-      phone,
-      address,
-      businessType,
-      "logoUrl": logo.asset->url
-    }
-  `);
+  // const pendingSellers = await client.fetch(`
+  //   *[_type == "seller" && isApproved == false] {
+  //     _id,
+  //     name,
+  //     email,
+  //     phone,
+  //     address,
+  //     businessType,
+  //     "logoUrl": logo.asset->url
+  //   }
+  // `);
 
-  const approveSeller = async (sellerId: string) => {
-    await client.patch(sellerId).set({ isApproved: true }).commit();
-  };
+  // const approveSeller = async (sellerId: string) => {
+  //   await client.patch(sellerId).set({ isApproved: true }).commit();
+  // };
 
   return (
     <div className="p-6">
-      <h1 className="mb-6 text-2xl font-bold">Pending Approvals</h1>
+      {/* <h1 className="mb-6 text-2xl font-bold">Pending Approvals</h1>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {pendingSellers.map(
           (seller: {
@@ -61,7 +61,7 @@ export default async function ApprovalsPage() {
             </div>
           ),
         )}
-      </div>
+      </div> */}
     </div>
   );
 }
