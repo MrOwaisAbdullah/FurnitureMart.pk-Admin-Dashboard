@@ -64,14 +64,7 @@ const options: ApexOptions = {
   },
 };
 
-interface ChartTwoState {
-  series: {
-    name: string;
-    data: number[];
-  }[];
-}
-
-const ChartTwo: React.FC<ChartTwoState> = () => {
+const ChartTwo: React.FC = () => {
   const series = [
     {
       name: "Sales",
