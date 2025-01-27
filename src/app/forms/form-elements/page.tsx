@@ -12,6 +12,7 @@ export const metadata: Metadata = {
 const FormElementsPage = () => {
   return (
     <DefaultLayout>
+      <h1>HI</h1>
       {/* <FormElements /> */}
     </DefaultLayout>
   );
