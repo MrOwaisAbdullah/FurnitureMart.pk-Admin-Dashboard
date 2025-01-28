@@ -5,32 +5,28 @@ export default clerkMiddleware(async (auth, req) => {
   const publicRoutes = ["/"];
   const { userId, sessionId } = await auth();
 
+  // Debugging
   console.log("Middleware Debug:");
   console.log("Request Path:", req.nextUrl.pathname);
   console.log("User ID:", userId);
   console.log("Session ID:", sessionId);
+  console.log("Request Host:", req.headers.get("host"));
+  console.log("Request URL:", req.url);
 
-  try {
-    // Allow access to public routes
-    if (publicRoutes.includes(req.nextUrl.pathname)) {
-      return NextResponse.next();
-    }
-
-    // If user is not authenticated, redirect to sign-in
-    if (!userId || !sessionId) {
-      console.log("Redirecting to sign-in page");
-      return NextResponse.redirect(
-        process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL || "/sign-in"
-      );
-    }
-
-    // Protected route logic
-    console.log("User is authenticated, proceeding to route");
+  // Allow public routes
+  if (publicRoutes.includes(req.nextUrl.pathname)) {
     return NextResponse.next();
-  } catch (error) {
-    console.error("Middleware Error:", error);
-    return new NextResponse("Middleware failed", { status: 500 });
   }
+
+  // Redirect unauthenticated users
+  if (!userId || !sessionId) {
+    console.log("Redirecting to sign-in");
+    return NextResponse.redirect(
+      process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL || "/sign-in"
+    );
+  }
+
+  return NextResponse.next();
 });
 
 export const config = {
