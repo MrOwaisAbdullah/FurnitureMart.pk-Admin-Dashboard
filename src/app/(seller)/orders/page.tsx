@@ -1,7 +1,8 @@
 "use client";
 import { Eye, Trash2 } from "lucide-react";
+import { useState } from "react";
 
-const orderData = [
+const order = [
   {
     orderId: "#12345",
     customerName: "John Doe",
@@ -26,9 +27,37 @@ const orderData = [
 ];
 
 const OrderTable = () => {
-  const handleStatusChange = (orderId: string, newStatus: string) => {
-    // Implement logic to update order status in Sanity
-    console.log(`Updating order ${orderId} to status: ${newStatus}`);
+    // State to hold orders
+    const [orders, setOrders] = useState<any>([]);
+
+      // Handle status change
+  const handleStatusChange = async (orderId: string, newStatus: string) => {
+    try {
+      // Find the order by orderId
+      const orderToUpdate = orders.find((order:any) => order.orderId === orderId);
+
+      if (!orderToUpdate) {
+        console.error(`Order with ID ${orderId} not found`);
+        return;
+      }
+
+      // // Update the status in Sanity
+      // await client
+      //   .patch(orderToUpdate._id) // Use the Sanity document ID
+      //   .set({ status: newStatus })
+      //   .commit();
+
+      // Update the local state
+      setOrders((prevOrders: any) =>
+        prevOrders.map((order: any) =>
+          order.orderId === orderId ? { ...order, status: newStatus } : order
+        )
+      );
+
+      console.log(`Order ${orderId} updated to status: ${newStatus}`);
+    } catch (error) {
+      console.error(`Failed to update order ${orderId}:`, error);
+    }
   };
 
   return (
@@ -58,7 +87,7 @@ const OrderTable = () => {
             </tr>
           </thead>
           <tbody>
-            {orderData.map((order, key) => (
+            {order.map((order, key) => (
               <tr key={key}>
                 <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                   <p className="text-black dark:text-white">{order.orderId}</p>

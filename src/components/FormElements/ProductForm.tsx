@@ -6,11 +6,13 @@ import { useNotifications } from "@/context/NotificationContext";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { Save } from "lucide-react";
+import { Loader2, Save } from "lucide-react";
 import MultiSelect from "@/components/FormElements/MultiSelect";
 import { client } from "@/sanity/lib/client";
 import Image from "next/image";
 import ImageCropModal from "./ImageCropModal";
+import { Product } from "@/types/product";
+import LoadingOverlay from "../common/Loader/LoadingOverlay";
 
 // Zod schema for form validation
 const productSchema = z.object({
@@ -26,7 +28,7 @@ const productSchema = z.object({
       if (val === undefined || val === null) return true;
       return true;
     }, "Old price must be greater than the current price"),
-  image: z.instanceof(File, { message: "Featured image is required" }),
+  image: z.instanceof(File, { message: "Featured image is required" }).optional(),
   imageGallery: z
     .array(z.instanceof(File))
     .max(5, "Maximum 5 images allowed")
@@ -42,7 +44,7 @@ const productSchema = z.object({
 
 type ProductFormData = z.infer<typeof productSchema>;
 
-const ProductUploadForm = ({ sellerId }: { sellerId: string }) => {
+const ProductUploadForm = ({ sellerId, product }: { sellerId: string; product?: Product }) => {
   const router = useRouter();
   const { addNotification } = useNotifications();
 
@@ -52,23 +54,26 @@ const ProductUploadForm = ({ sellerId }: { sellerId: string }) => {
     formState: { errors },
     setValue,
     watch,
+    reset,
   } = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
     defaultValues: {
-      priceWithoutDiscount: null,
-      inventory: null,
-      tags: [],
+      title: product?.title || "",
+      description: product?.description || "",
+      price: product?.price || 0,
+      priceWithoutDiscount: product?.priceWithoutDiscount || null,
+      inventory: product?.inventory || null,
+      tags: product?.tags || [],
+      category: product?.category._id || "",
+      image: undefined, 
+      imageGallery: [],
     },
   });
 
   const [isLoading, setIsLoading] = useState(false);
-  const [categories, setCategories] = useState<
-    { _id: string; title: string }[]
-  >([]);
-  const [predefinedTags, setPredefinedTags] = useState<
-    { value: string; label: string }[]
-  >([]);
-  const [tags, setTags] = useState<string[]>([]);
+  const [categories, setCategories] = useState<{ _id: string; title: string }[]>([]);
+  const [predefinedTags, setPredefinedTags] = useState<{ value: string; label: string }[]>([]);
+  const [tags, setTags] = useState<string[]>(product?.tags || []);
 
   // Fetch tags from Sanity
   useEffect(() => {
@@ -98,6 +103,12 @@ const ProductUploadForm = ({ sellerId }: { sellerId: string }) => {
     fetchTags();
   }, []);
 
+  useEffect(() => {
+    if (product?.tags) {
+      setTags(product.tags);
+    }
+  }, [product]);
+
   // Fetch categories from Sanity
   useEffect(() => {
     const fetchCategories = async () => {
@@ -112,6 +123,26 @@ const ProductUploadForm = ({ sellerId }: { sellerId: string }) => {
 
     fetchCategories();
   }, []);
+
+  useEffect(() => {
+    if (product) {
+      // Set featured image preview
+      if (product.image) {
+        setPreviewUrls((prev) => ({ ...prev, featured: product.image }));
+      }
+  
+      // Set gallery image previews
+      if (product.imageGallery && product.imageGallery.length > 0) {
+        setPreviewUrls((prev) => ({ ...prev, gallery: product.imageGallery || [] }));
+      }
+    }
+  }, [product]);
+
+  useEffect(() => {
+    if (product?.category) {
+      setValue("category", product.category._id);
+    }
+  }, [product, setValue]);
 
   const onSubmit: SubmitHandler<ProductFormData> = async (data) => {
     // Validate priceWithoutDiscount manually
@@ -144,7 +175,10 @@ const ProductUploadForm = ({ sellerId }: { sellerId: string }) => {
       formData.append("tags", JSON.stringify(data.tags));
     }
     formData.append("seller", sellerId);
-    formData.append("image", data.image);
+
+    if (data.image) {
+      formData.append("image", data.image);
+    }
 
     if (data.imageGallery && data.imageGallery.length > 0) {
       data.imageGallery.forEach((file, index) => {
@@ -152,26 +186,55 @@ const ProductUploadForm = ({ sellerId }: { sellerId: string }) => {
       });
     }
 
+    console.log("Product ID upload form:", product?._id);
+    console.log("Form Data upload form:", formData);
     try {
-      const response = await fetch("/api/products", {
-        method: "POST",
+      const endpoint = product ? `/api/products/${product._id}` : "/api/products";
+      const method = product ? "PATCH" : "POST";
+  
+      const response = await fetch(endpoint, {
+        method,
         body: formData,
       });
 
       if (response.ok) {
-        addNotification("Product uploaded successfully!", "success");
+        addNotification(product ? "Product updated successfully!" : "Product uploaded successfully!", "success");
+        router.refresh();
+        // Reset the form fields after successful submission
+        reset({
+          title: "",
+          description: "",
+          price: 0,
+          priceWithoutDiscount: null,
+          inventory: null,
+          tags: [],
+          category: "",
+          image: undefined,
+          imageGallery: [],
+        });
+
+        // Clear image previews
+        setPreviewUrls({
+          featured: null,
+          gallery: [],
+        });
+
+        // Clear tags
+        setTags([]);
+
+        // Refresh the page or navigate to another page if needed
         router.refresh();
       } else {
         const errorData = await response.json();
         addNotification(
-          `Failed to upload product: ${errorData.error}`,
+          `Failed to ${product ? "update" : "upload"} product: ${errorData.error}`,
           "error",
         );
       }
     } catch (error) {
       console.error("Error uploading product:", error);
       addNotification(
-        "An error occurred while uploading the product.",
+        `An error occurred while ${product ? "updating" : "uploading"} the product.`,
         "error",
       );
     } finally {
@@ -283,9 +346,12 @@ const ProductUploadForm = ({ sellerId }: { sellerId: string }) => {
       setCurrentImage(null);
       setTempImages([]);
     };
+
     
   return (
     <>
+          {isLoading && <LoadingOverlay />}
+
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Title */}
         <div>
@@ -475,13 +541,22 @@ const ProductUploadForm = ({ sellerId }: { sellerId: string }) => {
 
         {/* Submit Button */}
         <div>
-          <button
+        <button
             type="submit"
             disabled={isLoading}
-            className="flex items-center justify-center rounded bg-primary px-6 py-3 text-white hover:bg-opacity-90"
+            className="flex items-center justify-center rounded bg-primary px-6 py-3 text-white hover:bg-opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            <Save className="mr-2" size={16} />
-            {isLoading ? "Uploading..." : "Upload Product"}
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                {product ? "Updating..." : "Uploading..."}
+              </>
+            ) : (
+              <>
+                <Save className="mr-2" size={16} />
+                {product ? "Update Product" : "Upload Product"}
+              </>
+            )}
           </button>
         </div>
       </form>

@@ -1,8 +1,26 @@
-export type Product = {
-  image: string;
-  name: string;
-  category: string;
+import { SanityImageSource } from "@sanity/image-url/lib/types/types";
+
+export interface Product {
+  _id: string;
+  title: string;
+  slug: {
+    current: string;
+  };
+  description: string;
   price: number;
-  sold: number;
-  profit: number;
-};
+  priceWithoutDiscount?: number;
+  isDiscounted: boolean;
+  image: string;
+  imageGallery?: string[];
+  category: {
+    _id: string;
+    title: string;
+  };
+  inventory: number;
+  tags?: string[];
+  isNew: boolean;
+  seller: {
+    _id: string;
+    name: string;
+  };
+}

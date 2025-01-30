@@ -8,5 +8,5 @@ export interface Seller {
   address?: string;
   businessType?: "showroom" | "workshop" | "both";
   isApproved?: boolean;
-  logoUrl?: string; // Add this field
+  logoUrl?: string; 
 }

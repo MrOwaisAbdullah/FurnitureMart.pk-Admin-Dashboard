@@ -1,8 +1,8 @@
 import { client } from "@/sanity/lib/client";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import slugify from "slugify";
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
 
@@ -114,6 +114,76 @@ export async function POST(request: Request) {
     return NextResponse.json(
       { error: "Failed to upload product", details: error.message },
       { status: 500 },
+    );
+  }
+}
+
+export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const productId = params.id; // Extract productId from URL params
+    if (!productId) {
+      return NextResponse.json(
+        { error: "Product ID is required" },
+        { status: 400 }
+      );
+    }
+
+    const formData = await request.formData();
+
+    const updateData: any = {
+      title: formData.get("title"),
+      description: formData.get("description"),
+      price: parseFloat(formData.get("price") as string),
+      category: {
+        _type: "reference",
+        _ref: formData.get("category"),
+      },
+      inventory: formData.get("inventory") ? parseInt(formData.get("inventory") as string) : null,
+      tags: JSON.parse(formData.get("tags") as string),
+    };
+
+    if (formData.get("priceWithoutDiscount")) {
+      updateData.priceWithoutDiscount = parseFloat(formData.get("priceWithoutDiscount") as string);
+    }
+
+    if (formData.get("image")) {
+      const imageFile = formData.get("image") as File;
+      const imageAsset = await client.assets.upload("image", imageFile);
+      updateData.image = {
+        _type: "image",
+        asset: {
+          _type: "reference",
+          _ref: imageAsset._id,
+        },
+      };
+    }
+
+    if (formData.getAll("imageGallery")) {
+      const galleryFiles = formData.getAll("imageGallery") as File[];
+      const galleryAssets = await Promise.all(
+        galleryFiles.map((file) => client.assets.upload("image", file))
+      );
+      updateData.imageGallery = galleryAssets.map((asset) => ({
+        _type: "image",
+        asset: {
+          _type: "reference",
+          _ref: asset._id,
+        },
+      }));
+    }
+
+    console.log("Product ID from Params:", params.id);
+console.log("Form Data Received:", Object.fromEntries(formData.entries()));
+
+    // Update the product in Sanity
+    await client.patch(productId).set(updateData).commit();
+
+    return NextResponse.json({ success: true }, { status: 200 });
+  } catch (error: any) {
+    console.error("Error updating product:", error);
+    return NextResponse.json(
+      { error: "Failed to update product", details: error.message },
+      { status: 500 }
     );
   }
 }
