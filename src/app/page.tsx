@@ -91,7 +91,7 @@ export default function Home() {
             </SignedIn>
             <SignedOut>
               <Link
-                href="https://fast-foal-29.accounts.dev/sign-in"
+                href={`${process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL}`}
                 className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-primary to-secondary text-white text-xl font-bold rounded-lg hover:scale-105 transition duration-300 shadow-lg hover:shadow-2xl"
               >
                 Start Selling
@@ -177,7 +177,7 @@ export default function Home() {
           <SignedOut>
             <div className="space-y-4 md:space-y-0 md:space-x-4">
               <Link
-                href="https://fast-foal-29.accounts.dev/sign-in"
+                href={`${process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL}`}
                 className="inline-flex items-center px-8 py-4 bg-white text-primary font-semibold rounded-lg hover:bg-opacity-90 transition duration-300 shadow-lg hover:shadow-xl hover:scale-105"
               >
                 Become a Seller
