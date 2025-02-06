@@ -4,7 +4,6 @@ import React from "react";
 import ChartOne from "../Charts/ChartOne";
 import ChartTwo from "../Charts/ChartTwo";
 import CardDataStats from "../CardDataStats";
-import TableTwo from "../Tables/TableTwo";
 
 
 const ChartThree = dynamic(() => import("@/components/Charts/ChartThree"), {
@@ -105,9 +104,6 @@ const ECommerce: React.FC = () => {
         <ChartOne />
         <ChartTwo />
         <ChartThree />
-        <div className="col-span-12 xl:col-span-8">
-          <TableTwo />
-        </div>
       </div>
     </>
   );

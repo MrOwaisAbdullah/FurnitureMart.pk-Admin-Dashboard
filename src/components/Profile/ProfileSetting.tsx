@@ -72,7 +72,7 @@ export default function SettingsPage({ seller }: { seller: any }) {
 
   return (
     <DefaultLayout>
-      <div className="mx-auto max-w-270">
+      <div className="mx-auto max-w-270 min-h-screen">
         <Breadcrumb pageName="Settings" />
 
         <form onSubmit={handleSubmit}>

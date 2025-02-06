@@ -50,10 +50,10 @@ export async function POST(request: Request) {
     console.log("Seller created:", JSON.stringify(seller, null, 2)); // Debugging
 
     return NextResponse.json(seller, { status: 200 });
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error creating seller:", error); // Debugging
     return NextResponse.json(
-      { error: "Failed to create seller", details: error.message },
+      { error: "Failed to create seller", details: error },
       { status: 500 }
     );
   }

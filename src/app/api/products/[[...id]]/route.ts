@@ -1,8 +1,20 @@
 import { client } from "@/sanity/lib/client";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import slugify from "slugify";
 
-export async function POST(request: NextRequest) {
+// ----- POST: Create a new product -----
+export async function POST(
+  request: Request,
+  { params }: { params: { id?: string[] } }
+) {
+  // If an ID is provided in the URL, we don't allow POST (should use PATCH for update)
+  if (params.id && params.id.length > 0) {
+    return NextResponse.json(
+      { error: "POST request should not include a product ID. Use PATCH for updates." },
+      { status: 400 }
+    );
+  }
+
   try {
     const formData = await request.formData();
 
@@ -10,45 +22,34 @@ export async function POST(request: NextRequest) {
     const title = formData.get("title") as string;
     const description = formData.get("description") as string;
     const price = parseFloat(formData.get("price") as string);
-    const priceWithoutDiscount = parseFloat(
-      formData.get("priceWithoutDiscount") as string,
-    );
+    const priceWithoutDiscount = parseFloat(formData.get("priceWithoutDiscount") as string);
     const category = formData.get("category") as string;
     const inventory = parseInt(formData.get("inventory") as string);
     const tags = JSON.parse(formData.get("tags") as string);
-    const seller = formData.get("seller") as string; // This should be the clerkId
+    const seller = formData.get("seller") as string; // This is the clerkId
     const image = formData.get("image") as File;
     const imageGallery = formData.getAll("imageGallery") as File[];
 
     // Fetch the seller document by clerkId
     const sellerDoc = await client.fetch(
       `*[_type == "seller" && clerkId == $clerkId][0]`,
-      { clerkId: seller },
+      { clerkId: seller }
     );
-
     if (!sellerDoc) {
-      return NextResponse.json(
-        { error: "Seller not found" },
-        { status: 404 },
-      );
+      return NextResponse.json({ error: "Seller not found" }, { status: 404 });
     }
-
-    // Use the seller's _id for the reference
     const sellerRef = sellerDoc._id;
 
-    // Generate a slug from the title
+    // Generate a unique slug from the title
     const baseSlug = slugify(title, { lower: true, strict: true });
     let slug = baseSlug;
     let slugExists = true;
     let counter = 1;
-
-    // Check if the slug already exists and make it unique
     while (slugExists) {
       const existingProduct = await client.fetch(
         `*[_type == "products" && slug.current == $slug][0]`,
-        { slug },
+        { slug }
       );
-
       if (!existingProduct) {
         slugExists = false;
       } else {
@@ -63,9 +64,7 @@ export async function POST(request: NextRequest) {
     // Upload the image gallery to Sanity (if provided)
     const imageGalleryAssets = imageGallery.length
       ? await Promise.all(
-          imageGallery.map(async (file) => {
-            return await client.assets.upload("image", file);
-          }),
+          imageGallery.map(async (file) => await client.assets.upload("image", file))
         )
       : [];
 
@@ -76,36 +75,18 @@ export async function POST(request: NextRequest) {
       description,
       price,
       ...(priceWithoutDiscount && { priceWithoutDiscount }),
-      slug: {
-        _type: "slug",
-        current: slug,
-      },
-      image: {
-        _type: "image",
-        asset: {
-          _type: "reference",
-          _ref: imageAsset._id,
-        },
-      },
+      slug: { _type: "slug", current: slug },
+      image: { _type: "image", asset: { _type: "reference", _ref: imageAsset._id } },
       ...(imageGalleryAssets.length > 0 && {
         imageGallery: imageGalleryAssets.map((asset) => ({
           _type: "image",
-          asset: {
-            _type: "reference",
-            _ref: asset._id,
-          },
+          asset: { _type: "reference", _ref: asset._id },
         })),
       }),
-      category: {
-        _type: "reference",
-        _ref: category,
-      },
+      category: { _type: "reference", _ref: category },
       ...(inventory && { inventory }),
       ...(tags && tags.length > 0 && { tags }),
-      seller: {
-        _type: "reference",
-        _ref: sellerRef, // Use the seller's _id here
-      },
+      seller: { _type: "reference", _ref: sellerRef },
     });
 
     return NextResponse.json(product, { status: 200 });
@@ -113,32 +94,33 @@ export async function POST(request: NextRequest) {
     console.error("Error uploading product:", error);
     return NextResponse.json(
       { error: "Failed to upload product", details: error.message },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
 
-export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+// ----- PATCH: Update an existing product -----
+export async function PATCH(
+  request: Request,
+  { params }: { params: { id?: string[] } }
+) {
+  // Ensure an ID is provided for updates
+  if (!params.id || params.id.length === 0) {
+    return NextResponse.json({ error: "Product ID is required for update." }, { status: 400 });
+  }
+  // Use the first segment as the product ID (assuming a single ID is provided)
+  const productId = params.id[0];
+
   try {
-    const productId = params.id; // Extract productId from URL params
-    if (!productId) {
-      return NextResponse.json(
-        { error: "Product ID is required" },
-        { status: 400 }
-      );
-    }
-
     const formData = await request.formData();
-
     const updateData: any = {
       title: formData.get("title"),
       description: formData.get("description"),
       price: parseFloat(formData.get("price") as string),
-      category: {
-        _type: "reference",
-        _ref: formData.get("category"),
-      },
-      inventory: formData.get("inventory") ? parseInt(formData.get("inventory") as string) : null,
+      category: { _type: "reference", _ref: formData.get("category") as string },
+      inventory: formData.get("inventory")
+        ? parseInt(formData.get("inventory") as string)
+        : null,
       tags: JSON.parse(formData.get("tags") as string),
     };
 
@@ -149,35 +131,23 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
     if (formData.get("image")) {
       const imageFile = formData.get("image") as File;
       const imageAsset = await client.assets.upload("image", imageFile);
-      updateData.image = {
-        _type: "image",
-        asset: {
-          _type: "reference",
-          _ref: imageAsset._id,
-        },
-      };
+      updateData.image = { _type: "image", asset: { _type: "reference", _ref: imageAsset._id } };
     }
 
-    if (formData.getAll("imageGallery")) {
-      const galleryFiles = formData.getAll("imageGallery") as File[];
+    // For image gallery, use getAll to capture multiple files
+    const galleryFiles = formData.getAll("imageGallery") as File[];
+    if (galleryFiles.length > 0) {
       const galleryAssets = await Promise.all(
         galleryFiles.map((file) => client.assets.upload("image", file))
       );
       updateData.imageGallery = galleryAssets.map((asset) => ({
         _type: "image",
-        asset: {
-          _type: "reference",
-          _ref: asset._id,
-        },
+        asset: { _type: "reference", _ref: asset._id },
       }));
     }
 
-    console.log("Product ID from Params:", params.id);
-console.log("Form Data Received:", Object.fromEntries(formData.entries()));
-
-    // Update the product in Sanity
+    // Update the product document in Sanity
     await client.patch(productId).set(updateData).commit();
-
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error: any) {
     console.error("Error updating product:", error);

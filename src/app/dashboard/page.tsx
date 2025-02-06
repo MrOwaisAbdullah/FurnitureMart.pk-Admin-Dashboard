@@ -1,9 +1,9 @@
-import ECommerce from "@/components/Dashboard/E-commerce";
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { client } from "@/sanity/lib/client";
+import SellerDashboard from "@/components/Dashboard/SellerDashboard";
 
 
 export const metadata: Metadata = {
@@ -36,7 +36,7 @@ export default async function Home() {
   return (
     <>
       <DefaultLayout>
-        <ECommerce />
+        <SellerDashboard />
       </DefaultLayout>
     </>
   );

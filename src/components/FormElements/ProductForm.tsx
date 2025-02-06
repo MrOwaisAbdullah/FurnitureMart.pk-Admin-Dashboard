@@ -116,13 +116,19 @@ const ProductUploadForm = ({ sellerId, product }: { sellerId: string; product?: 
         `*[_type == "categories"] {
           _id,
           title
-        }`,
+        }`
       );
       setCategories(categories);
+  
+      // Set category only after fetching categories to avoid undefined issues
+      if (product?.category) {
+        setValue("category", product.category._id);
+      }
     };
-
+  
     fetchCategories();
-  }, []);
+  }, [product, setValue]);
+  
 
   useEffect(() => {
     if (product) {
@@ -145,27 +151,15 @@ const ProductUploadForm = ({ sellerId, product }: { sellerId: string; product?: 
   }, [product, setValue]);
 
   const onSubmit: SubmitHandler<ProductFormData> = async (data) => {
-    // Validate priceWithoutDiscount manually
-    if (data.priceWithoutDiscount && data.priceWithoutDiscount <= data.price) {
-      addNotification(
-        "Old price must be greater than the current price",
-        "error",
-      );
-      return;
-    }
-
-    setIsLoading(true);
-
+    console.log("Form Data:", data); // Log the form data
+  
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("description", data.description);
     formData.append("price", data.price.toString());
-
+  
     if (data.priceWithoutDiscount) {
-      formData.append(
-        "priceWithoutDiscount",
-        data.priceWithoutDiscount.toString(),
-      );
+      formData.append("priceWithoutDiscount", data.priceWithoutDiscount.toString());
     }
     formData.append("category", data.category);
     if (data.inventory) {
@@ -175,21 +169,21 @@ const ProductUploadForm = ({ sellerId, product }: { sellerId: string; product?: 
       formData.append("tags", JSON.stringify(data.tags));
     }
     formData.append("seller", sellerId);
-
+  
     if (data.image) {
       formData.append("image", data.image);
     }
-
+  
     if (data.imageGallery && data.imageGallery.length > 0) {
       data.imageGallery.forEach((file, index) => {
         formData.append(`imageGallery[${index}]`, file);
       });
     }
 
-    console.log("Product ID upload form:", product?._id);
-    console.log("Form Data upload form:", formData);
+    // console.log("Product ID upload form:", product?._id);
+    // console.log("Form Data upload form:", formData);
     try {
-      const endpoint = product ? `/api/products/${product._id}` : "/api/products";
+      const endpoint = product ? `${process.env.NEXT_PUBLIC_BASE_URL}/api/products/${product._id}` : `${process.env.NEXT_PUBLIC_BASE_URL}/api/products`;
       const method = product ? "PATCH" : "POST";
   
       const response = await fetch(endpoint, {
@@ -222,8 +216,9 @@ const ProductUploadForm = ({ sellerId, product }: { sellerId: string; product?: 
         // Clear tags
         setTags([]);
 
-        // Refresh the page or navigate to another page if needed
-        router.refresh();
+     // Redirect after successful update
+      router.push("/products/list");
+
       } else {
         const errorData = await response.json();
         addNotification(

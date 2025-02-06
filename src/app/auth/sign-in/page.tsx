@@ -5,9 +5,9 @@ import Image from "next/image";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "Next.js SignIn Page | TailAdmin - Next.js Dashboard Template",
-  description: "This is Next.js Signin Page TailAdmin Dashboard Template",
+export const metadata = {
+  title: "FurnitureMart Sellers - Grow Your Furniture Business",
+  description: "Join FurnitureMart as a seller and reach thousands of customers. Easy setup, powerful tools, and maximum profits.",
 };
 
 const SignInPage = () => {
@@ -44,7 +44,7 @@ const SignInPage = () => {
             <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
               <span className="mb-1.5 block font-medium">Start for free</span>
               <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
-                Sign In to TailAdmin
+                Sign In to FurnitureMart.pk
               </h2>
 
               {/* Clerk's SignIn component */}

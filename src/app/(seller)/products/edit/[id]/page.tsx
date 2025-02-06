@@ -1,4 +1,5 @@
 import ProductUploadForm from "@/components/FormElements/ProductForm";
+import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import { client } from "@/sanity/lib/client";
 import { notFound } from "next/navigation";
 
@@ -30,16 +31,18 @@ const EditProductPage = async ({ params }: { params: { id: string } }) => {
   if (!product) {
     notFound();
   }
-  console.log("Product ID edit page:", params.id);
-console.log("Product Data edit page:", product);
+//   console.log("Product ID edit page:", params.id);
+// console.log("Product Data edit page:", product);
 
   return (
+    <DefaultLayout>
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-2xl font-bold mb-6">Edit Product</h1>
         <ProductUploadForm sellerId={product.seller._id} product={product} />
       </div>
     </div>
+    </DefaultLayout>
   );
 };
 
