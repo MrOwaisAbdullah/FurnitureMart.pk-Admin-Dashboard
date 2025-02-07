@@ -36,14 +36,6 @@ export async function POST(req: Request) {
       isApproved: false, // Seller is not approved by default
     });
 
-    // ✅ Update Clerk user public metadata with verificationStatus
-    const clerk = await clerkClient();
-    await clerk.users.updateUser(id, {
-      publicMetadata: {
-        verificationStatus: "pending",
-      },
-    });
-
     console.log(`User ${id} updated with verificationStatus: pending`);
 
     return new Response("OK", { status: 200 });
