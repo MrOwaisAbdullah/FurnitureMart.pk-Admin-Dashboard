@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { client } from "./sanity/lib/client";
 
 export default clerkMiddleware(async (auth, req) => {
-  const publicRoutes = ["/", "/sign-in", "/sign-up", "/api/create-seller", "/pending-verification"];
+  const publicRoutes = ["/", "/api/seller-status", "/sign-in", "/sign-up", "/api/create-seller", "/pending-verification"]
   const { userId, sessionId } = await auth();
 
   // Allow public routes

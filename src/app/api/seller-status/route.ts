@@ -2,23 +2,18 @@ import { client } from "@/sanity/lib/client";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-export const dynamic = "force-dynamic"; // Ensure dynamic execution (Fix #2)
-
-export async function GET(request: Request) {
+export async function GET() {
   try {
-    // Get Clerk Authentication (Fix #1)
     const { userId } = await auth();
 
+    console.log("userid:", userId)
     if (!userId) {
       return NextResponse.json(
-        { error: "User is not authenticated." },
+        { error: "Unauthorized" },
         { status: 401 }
       );
     }
 
-    console.log("User ID:", userId);
-
-    // Fetch seller from Sanity
     const seller = await client.fetch(
       `*[_type == "seller" && clerkId == $userId][0] {
         isApproved
@@ -27,14 +22,16 @@ export async function GET(request: Request) {
     );
 
     console.log("seller:", seller)
-
     if (!seller) {
-      return NextResponse.json({ error: "Seller not found" }, { status: 404 });
+      return NextResponse.json({ isApproved: false }, { status: 200 });
     }
    
     return NextResponse.json({ isApproved: seller.isApproved });
   } catch (error) {
     console.error("Error fetching seller status:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" }, 
+      { status: 500 }
+    );
   }
 }
