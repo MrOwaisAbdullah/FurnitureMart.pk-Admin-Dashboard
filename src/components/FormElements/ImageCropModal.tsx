@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import ReactCrop, { Crop, PixelCrop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { X, Square, Maximize2 } from 'lucide-react';
+import Image from 'next/image';
 
 interface CropPreset {
   name: string;
@@ -195,12 +196,14 @@ const ImageCropModal: React.FC<ImageCropModalProps> = ({
             onComplete={(c) => setCompletedCrop(c)}
             aspect={CROP_PRESETS.find(p => p.name === selectedPreset)?.aspect}
           >
-            <img
+            <Image
               ref={imgRef}
               src={imageUrl}
               alt="Crop me"
               onLoad={onImageLoad}
               className="max-h-[60vh] w-auto"
+              width={300}
+              height={300}
             />
           </ReactCrop>
         </div>
