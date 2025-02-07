@@ -12,16 +12,14 @@ export default function UserStatus() {
 
   useEffect(() => {
     const fetchStatus = async () => {
-      if (!user) return; // Don't fetch if user is null
-
-      setIsLoading(true);
+      if (!user) {
+        setIsLoading(false);
+        return;
+      }
 
       try {
         const response = await fetch("/api/seller-status");
-        
-        if (!response.ok) {
-          throw new Error(`Error: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`Error: ${response.status}`);
 
         const data = await response.json();
         setVerificationStatus(data.isApproved ? "approved" : "pending");
@@ -32,7 +30,7 @@ export default function UserStatus() {
       }
     };
 
-    if (isLoaded && user) {
+    if (isLoaded) {
       fetchStatus();
     }
   }, [isLoaded, user]);
