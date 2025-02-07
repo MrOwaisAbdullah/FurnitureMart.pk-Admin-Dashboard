@@ -19,7 +19,7 @@ export default async function Home() {
 
   // If the user is not signed in, redirect to the sign-in page
   if (!userId) {
-    redirect("https://fast-foal-29.accounts.dev/sign-in");
+    redirect(process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL ?? '/sign-in');
   }
 
   // Fetch seller data from Sanity
