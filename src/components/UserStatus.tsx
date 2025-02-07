@@ -40,7 +40,7 @@ export default function UserStatus() {
 //   console.log("User:", user);
 
 
-if (!isLoading) {
+if (isLoading) {
   return <div className="animate-pulse">Loading...</div>;
 }
 
