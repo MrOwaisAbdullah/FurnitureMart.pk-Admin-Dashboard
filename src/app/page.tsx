@@ -57,7 +57,7 @@ export default function Home() {
   return (
     <main className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative h-[90vh] flex items-center justify-center bg-gradient-to-br from-gray-2 via-whiter to-gray overflow-hidden">
+      <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-2 via-whiter to-gray overflow-hidden">
         {/* Animated background elements */}
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-grid-slate-900/[0.04] bg-[size:20px_20px] animate-[pulse_4s_ease-in-out_infinite]"></div>
@@ -71,14 +71,14 @@ export default function Home() {
           <span className="inline-block px-6 py-2 mb-8 text-primary bg-primary/10 rounded-full text-lg font-bold tracking-wide shadow-lg hover:shadow-xl transition-shadow duration-300">
             Seller Platform
           </span>
-          <h1 className="text-6xl md:text-8xl font-extrabold text-black mb-8 leading-tight">
+          <h1 className="text-5xl md:text-6xl lg:text-8xl font-extrabold text-black mb-8 leading-tight">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-meta-5 animate-gradient">
               Sell More,
               <br />
               Earn More
             </span>
           </h1>
-          <p className="text-2xl md:text-3xl text-black font-medium mb-12 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl md:text-3xl lg:4xl text-black font-medium mb-12 max-w-3xl mx-auto leading-relaxed">
             Join the fastest-growing furniture marketplace and transform your business with our powerful seller tools
           </p>
 
