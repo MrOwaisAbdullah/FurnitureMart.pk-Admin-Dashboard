@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useUser, useAuth } from "@clerk/nextjs";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import Loader from "./common/Loader";
 
 export default function UserStatus() {
   const { isLoaded, user } = useUser();
@@ -41,7 +42,7 @@ export default function UserStatus() {
 
   console.log("User:", user);
 
-  if (!isLoaded) return <p>Loading...</p>;
+  if (!isLoaded) return <Loader />;
 
   if (!user) {
     return (
