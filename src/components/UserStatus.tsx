@@ -6,6 +6,7 @@ import { ArrowRight } from "lucide-react";
 
 export default function UserStatus() {
   const { user } = useUser();
+  console.log(user)
   const verificationStatus = user?.publicMetadata?.verificationStatus;
 
   if (!user) {
