@@ -43,9 +43,9 @@ export default function UserStatus() {
   console.log("User:", user);
 
 
-//   if (!isLoaded || isLoading) {
-//     return <div className="animate-pulse">Loading...</div>;
-//   }
+  if (!isLoaded || isLoading) {
+    return <div className="animate-pulse">Loading...</div>;
+  }
 
   if (!user) {
     return (
