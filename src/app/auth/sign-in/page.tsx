@@ -1,9 +1,5 @@
-// app/(auth)/sign-in/page.tsx
 import { SignIn } from "@clerk/nextjs";
 import Link from "next/link";
-import Image from "next/image";
-import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import { Metadata } from "next";
 
 export const metadata = {
   title: "FurnitureMart Sellers - Grow Your Furniture Business",
