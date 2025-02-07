@@ -37,11 +37,6 @@ export default function UserStatus() {
 
 //   console.log("User:", user);
 
-
-if (isLoading) {
-  return <div className="animate-pulse">Loading...</div>;
-}
-
   if (!user) {
     return (
       <Link
@@ -53,6 +48,11 @@ if (isLoading) {
       </Link>
     );
   }
+
+  
+if (isLoading) {
+  return <div className="animate-pulse">Loading...</div>;
+}
 
   if (verificationStatus === "pending") {
     return (
