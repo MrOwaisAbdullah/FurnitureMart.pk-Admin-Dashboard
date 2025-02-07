@@ -21,7 +21,7 @@ export async function GET() {
       { userId }
     );
 
-    console.log("seller:", seller)
+    // console.log("seller:", seller)
     if (!seller) {
       return NextResponse.json({ isApproved: false }, { status: 200 });
     }

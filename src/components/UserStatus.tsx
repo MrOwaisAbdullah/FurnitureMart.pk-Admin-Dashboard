@@ -10,8 +10,6 @@ export default function UserStatus() {
   const [verificationStatus, setVerificationStatus] = useState<"approved" | "pending" | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  console.log("user:", user)
-
   useEffect(() => {
     const fetchStatus = async () => {
       if (!user) {
@@ -40,10 +38,10 @@ export default function UserStatus() {
     }
   }, [isLoaded, user]);
 
-  console.log("User:", user);
+//   console.log("User:", user);
 
 
-  if (!isLoaded || isLoading) {
+  if (user && !isLoaded || isLoading) {
     return <div className="animate-pulse">Loading...</div>;
   }
 
