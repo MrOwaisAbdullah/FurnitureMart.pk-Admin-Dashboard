@@ -1,14 +1,49 @@
 "use client";
 
-import { useUser } from "@clerk/nextjs";
+import { useEffect, useState } from "react";
+import { useUser, useAuth } from "@clerk/nextjs";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 export default function UserStatus() {
-  const { user } = useUser();
-  console.log(user)
-  const verificationStatus = user?.publicMetadata?.verificationStatus;
-  console.log(verificationStatus)
+  const { isLoaded, user } = useUser();
+  const { getToken } = useAuth();
+  const [verificationStatus, setVerificationStatus] = useState<"approved" | "pending" | null>(null);
+
+  useEffect(() => {
+    if (!user || !user.id) return;
+
+    const fetchStatus = async () => {
+      try {
+        const token = await getToken();
+        const response = await fetch(`/api/seller-status`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch verification status");
+        }
+
+        const data = await response.json();
+
+        if (data.isApproved) {
+          setVerificationStatus("approved");
+        } else {
+          setVerificationStatus("pending");
+        }
+      } catch (error) {
+        console.error("Error fetching seller status:", error);
+      }
+    };
+
+    fetchStatus();
+  }, [user, getToken]);
+
+  console.log("User:", user);
+
+  if (!isLoaded) return <p>Loading...</p>;
 
   if (!user) {
     return (
