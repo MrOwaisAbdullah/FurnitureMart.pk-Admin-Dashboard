@@ -45,8 +45,8 @@ FurnitureMart Admin Dashboard is a powerful platform designed for furniture sell
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/MrOwaisAbdullah/FurnitureMart.pk---Admin-Dashboard.git
-   cd FurnitureMart.pk---Admin-Dashboard
+   git clone https://github.com/MrOwaisAbdullah/FurnitureMart.pk-Admin-Dashboard.git
+   cd FurnitureMart.pk-Admin-Dashboard
    ```
 2. Install dependencies:
    ```sh
