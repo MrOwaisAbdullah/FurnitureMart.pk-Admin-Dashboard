@@ -26,10 +26,12 @@ export async function GET(request: Request) {
       { userId }
     );
 
+    console.log("seller:", seller)
+
     if (!seller) {
       return NextResponse.json({ error: "Seller not found" }, { status: 404 });
     }
-
+   
     return NextResponse.json({ isApproved: seller.isApproved });
   } catch (error) {
     console.error("Error fetching seller status:", error);
