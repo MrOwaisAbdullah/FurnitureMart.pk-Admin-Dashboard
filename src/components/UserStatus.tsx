@@ -12,10 +12,9 @@ export default function UserStatus() {
 
   useEffect(() => {
     const fetchStatus = async () => {
-      if (!user) {
-        setIsLoading(false);
-        return;
-      }
+      if (!user) return; // Don't fetch if user is null
+
+      setIsLoading(true);
 
       try {
         const response = await fetch("/api/seller-status");
@@ -41,9 +40,9 @@ export default function UserStatus() {
 //   console.log("User:", user);
 
 
-  if (user && !isLoaded || isLoading) {
-    return <div className="animate-pulse">Loading...</div>;
-  }
+if (!isLoading) {
+  return <div className="animate-pulse">Loading...</div>;
+}
 
   if (!user) {
     return (
@@ -59,7 +58,7 @@ export default function UserStatus() {
 
   if (verificationStatus === "pending") {
     return (
-      <div className="text-lg font-semibold text-gray-600 px-6 py-3 rounded-md">
+      <div className="text-lg font-semibold text-gray-600 animate-pulse">
         Your account is pending verification. Please wait for approval.
       </div>
     );
