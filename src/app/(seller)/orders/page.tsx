@@ -1,4 +1,3 @@
-// app/seller/orders/page.tsx
 "use client"
 import { useEffect, useState } from "react";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";

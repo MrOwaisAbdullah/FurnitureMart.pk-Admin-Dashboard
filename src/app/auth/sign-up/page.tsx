@@ -1,6 +1,7 @@
 import { SignUp } from "@clerk/nextjs";
+import { Metadata } from "next";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "FurnitureMart Sellers - Grow Your Furniture Business",
   description: "Join FurnitureMart as a seller and reach thousands of customers. Easy setup, powerful tools, and maximum profits.",
 };

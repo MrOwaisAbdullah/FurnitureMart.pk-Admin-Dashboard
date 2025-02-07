@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { client } from "@/sanity/lib/client";
 import { auth } from "@clerk/nextjs/server";
 
+export const dynamic = "force-dynamic"; // Ensures the route runs dynamically
+
 export async function GET(request: Request) {
   try {
     // Get the authenticated user's Clerk ID

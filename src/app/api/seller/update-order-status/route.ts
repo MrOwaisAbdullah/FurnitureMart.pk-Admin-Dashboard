@@ -1,4 +1,3 @@
-// app/api/update-order-status/route.ts
 import { NextResponse } from "next/server";
 import { client } from "@/sanity/lib/client";
 

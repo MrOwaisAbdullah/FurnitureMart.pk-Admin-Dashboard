@@ -8,7 +8,7 @@ import SellerDashboard from "@/components/Dashboard/SellerDashboard";
 
 export const metadata: Metadata = {
   title:
-    "Furniture Mart E-commerce Dashboard",
+    "Furniture Mart Seller Dashboard",
   description: "This is Furniture Mart Dashboard",
 };
 
