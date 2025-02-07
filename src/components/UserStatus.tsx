@@ -11,8 +11,6 @@ export default function UserStatus() {
   const [verificationStatus, setVerificationStatus] = useState<"approved" | "pending" | null>(null);
 
   useEffect(() => {
-    if (!user || !user.id) return;
-
     const fetchStatus = async () => {
       try {
         const token = await getToken();
