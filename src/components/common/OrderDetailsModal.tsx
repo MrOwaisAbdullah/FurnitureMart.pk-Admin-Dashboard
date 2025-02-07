@@ -19,7 +19,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
 // console.log("Slug:", order.products[0]?.product?.slug.current);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 rounded-[10px] shadow-default dark:border-strokedark dark:bg-boxdark">
       <div className="w-full max-w-lg rounded-lg bg-white p-6">
         <h2 className="mb-4 text-xl font-bold">Order Details</h2>
         <p>

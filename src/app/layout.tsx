@@ -29,7 +29,7 @@ export default function RootLayout({
     <NotificationsProvider>
     <html lang="en">
       <body suppressHydrationWarning={true}>
-        <div className="dark:bg-boxdark-2 dark:text-bodydark">
+        <div className="dark:bg-boxdark-2 dark:text-bodydark min-w-screen min-h-screen">
           {loading ? <Loader /> : children}
         </div>
       </body>
