@@ -2,7 +2,7 @@ import { clerkMiddleware } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 export default clerkMiddleware(async (auth, req) => {
-  const publicRoutes = ["/", "/sign-in", "/sign-up"];
+  const publicRoutes = ["/", "/sign-in", "/sign-up", "/api/create-seller"];
   const { userId, sessionId } = await auth();
 
   // Allow public routes
