@@ -43,9 +43,9 @@ export default function UserStatus() {
   console.log("User:", user);
 
 
-  if (!isLoaded || isLoading) {
-    return <div className="animate-pulse">Loading...</div>;
-  }
+//   if (!isLoaded || isLoading) {
+//     return <div className="animate-pulse">Loading...</div>;
+//   }
 
   if (!user) {
     return (
@@ -61,7 +61,7 @@ export default function UserStatus() {
 
   if (verificationStatus === "pending") {
     return (
-      <div className="text-lg font-semibold text-gray-600 bg-gray-100 px-6 py-3 rounded-md">
+      <div className="text-lg font-semibold text-gray-600 px-6 py-3 rounded-md">
         Your account is pending verification. Please wait for approval.
       </div>
     );
