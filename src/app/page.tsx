@@ -1,4 +1,4 @@
-import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { SignedIn, SignedOut, useUser } from "@clerk/nextjs";
 import Link from "next/link";
 import { ArrowRight, BarChart, ShieldCheck, DollarSign, Star } from "lucide-react";
 
@@ -50,6 +50,11 @@ const testimonials = [
 ];
 
 export default function Home() {
+
+  const { user } = useUser();
+  const verificationStatus = user?.publicMetadata?.verificationStatus; // Assuming this field exists
+
+  
   return (
     <main className="min-h-screen">
       {/* Hero Section */}
@@ -81,13 +86,19 @@ export default function Home() {
           {/* Dynamic Authentication Buttons */}
           <div className="space-x-4">
             <SignedIn>
-              <Link
-                href="/dashboard"
-                className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-primary to-secondary text-white text-xl font-bold rounded-lg hover:scale-105 transition duration-300 shadow-lg hover:shadow-2xl"
-              >
+            {verificationStatus === "pending" ? (
+          <div className="text-lg font-semibold text-gray-600 bg-gray-100 px-6 py-3 rounded-md">
+            Your account is pending verification. Please wait for approval.
+          </div>
+        ) : (
+          <Link
+            href="/dashboard"
+            className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-primary to-secondary text-white text-xl font-bold rounded-lg hover:scale-105 transition duration-300 shadow-lg hover:shadow-2xl"
+          >
                 Seller Dashboard
                 <ArrowRight className="ml-2 h-6 w-6" />
               </Link>
+        )}
             </SignedIn>
             <SignedOut>
               <Link
