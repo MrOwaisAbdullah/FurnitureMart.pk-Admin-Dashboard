@@ -183,6 +183,7 @@ const ProductUploadForm = ({ sellerId, product }: { sellerId: string; product?: 
     // console.log("Product ID upload form:", product?._id);
     // console.log("Form Data upload form:", formData);
     try {
+      setIsLoading(true);
       const endpoint = product ? `${process.env.NEXT_PUBLIC_BASE_URL}/api/products/${product._id}` : `${process.env.NEXT_PUBLIC_BASE_URL}/api/products`;
       const method = product ? "PATCH" : "POST";
   
