@@ -84,19 +84,32 @@ const ProductTable = () => {
     fetchData();
   }, [clerkUserId, page]);
 
+  // Handle product editing
   const handleEdit = (productId: string) => {
     // Redirect to the edit page
     router.push(`/products/edit/${productId}`);
   };
 
+  // Handle product deletion
   const handleDelete = async () => {
     if (!productToDelete) return;
+  
     try {
-      await client.delete(productToDelete);
+      // Call the DELETE API endpoint
+      const response = await fetch(`/api/products/${productToDelete}`, {
+        method: "DELETE",
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to delete product");
+      }
+  
+      // Remove the deleted product from the local state
       setProducts((prev) => prev.filter((product) => product._id !== productToDelete));
       setIsModalOpen(false); // Close the modal after deletion
       setProductToDelete(null); // Reset the product to delete
     } catch (err) {
+      console.error("Error deleting product:", err);
       setError("Failed to delete product");
     }
   };
@@ -186,9 +199,9 @@ const ProductTable = () => {
                   <Edit className="h-5 w-5" />
                 </button>
                 <button
-                  onClick={() => {
-                    setIsModalOpen(true);
-                    setProductToDelete(product._id);
+                    onClick={() => {
+                      setIsModalOpen(true);
+                      setProductToDelete(product._id);
                   }}
                   className="hover:text-danger"
                 >

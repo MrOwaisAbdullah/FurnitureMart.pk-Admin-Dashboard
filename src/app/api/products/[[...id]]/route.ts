@@ -157,3 +157,35 @@ export async function PATCH(
     );
   }
 }
+
+// ----- DELETE: Delete a product -----
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string[] } }
+) {
+  // Ensure an ID is provided for deletion
+  if (!params.id || params.id.length === 0) {
+    return NextResponse.json(
+      { error: "Product ID is required for deletion." },
+      { status: 400 }
+    );
+  }
+
+  // Use the first segment as the product ID (assuming a single ID is provided)
+  const productId = params.id[0];
+
+  try {
+    // Delete the product document in Sanity
+    await client.delete(productId);
+    return NextResponse.json(
+      { success: true, message: "Product deleted successfully." },
+      { status: 200 }
+    );
+  } catch (error: any) {
+    console.error("Error deleting product:", error);
+    return NextResponse.json(
+      { error: "Failed to delete product", details: error.message },
+      { status: 500 }
+    );
+  }
+}
