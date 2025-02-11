@@ -12,8 +12,27 @@ interface OrderTableProps {
 const OrderTable: React.FC<OrderTableProps> = ({ orders, onUpdateStatus }) => {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [page, setPage] = useState(1); // Pagination state
+  const itemsPerPage = 10; // Number of orders per page
 
-  // console.log(orders);
+  // Calculate paginated orders
+  const startIndex = (page - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedOrders = orders.slice(startIndex, endIndex);
+
+  // Handle next page
+  const nextPage = () => {
+    if (endIndex < orders.length) {
+      setPage((prev) => prev + 1);
+    }
+  };
+
+  // Handle previous page
+  const prevPage = () => {
+    if (page > 1) {
+      setPage((prev) => prev - 1);
+    }
+  };
 
   // Open details modal
   const handleViewDetails = (order: Order) => {
@@ -48,8 +67,8 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, onUpdateStatus }) => {
             </tr>
           </thead>
           <tbody>
-            {orders.length > 0 ? (
-              orders.map((order: Order) => (
+            {paginatedOrders.length > 0 ? (
+              paginatedOrders.map((order: Order) => (
                 <tr key={order._id}>
                   {/* Order ID */}
                   <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
@@ -130,6 +149,26 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, onUpdateStatus }) => {
           </tbody>
         </table>
       </div>
+
+      {/* Pagination Controls */}
+      <div className="flex justify-between items-center mt-4 px-4 py-2">
+        <button
+          onClick={prevPage}
+          disabled={page === 1}
+          className="px-4 py-2 bg-primary text-white rounded disabled:bg-gray-300"
+        >
+          Previous
+        </button>
+        <span>Page {page}</span>
+        <button
+          onClick={nextPage}
+          disabled={endIndex >= orders.length}
+          className="px-4 py-2 bg-primary text-white rounded disabled:bg-gray-300"
+        >
+          Next
+        </button>
+      </div>
+
       {/* Order Details Modal */}
       {selectedOrder && (
         <OrderDetailsModal
