@@ -16,7 +16,7 @@ const LogoutButton = () => {
       addNotification("You have been logged out successfully.", "success"); 
       router.push("/"); // Redirect to the home page
     }
-  }, [isSignedIn, addNotification, router]);
+  }, [isSignedIn]);
 
   if (!isSignedIn) {
     return (
