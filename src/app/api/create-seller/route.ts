@@ -45,6 +45,7 @@ export async function POST(request: Request) {
       phone: "", // Leave phone empty for now
       address: "", // Leave address empty for now
       businessType: "showroom", // Default business type
+      role: "seller", // Default role
       isApproved: false, // Default to false for manual approval
     });
 

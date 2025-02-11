@@ -33,6 +33,7 @@ export async function POST(req: Request) {
       shopAddress: unsafe_metadata.shopAddress || "",
       hasShowroom: unsafe_metadata.hasShowroom || false,
       hasWorkshop: unsafe_metadata.hasWorkshop || false,
+      role: "seller",
       isApproved: false, // Seller is not approved by default
     });
 
