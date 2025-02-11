@@ -1,7 +1,6 @@
 "use client";
 import { SignOutButton, useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/navigation"; // Import useRouter
-import { useQueryClient } from "@tanstack/react-query";
 import { LogOut } from "lucide-react"; // Import Lucide icon
 import { useNotifications } from "@/context/NotificationContext"; // Import your notification context
 import { useEffect } from "react"; // Import useEffect
