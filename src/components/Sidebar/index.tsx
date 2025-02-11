@@ -5,7 +5,7 @@ import Link from "next/link";
 import SidebarItem from "@/components/Sidebar/SidebarItem";
 import ClickOutside from "@/components/ClickOutside";
 import useLocalStorage from "@/hooks/useLocalStorage";
-import LogoutButton from "../SignOutButton";
+import LogoutButton from "../LogOutButton";
 
 interface SidebarProps {
   sidebarOpen: boolean;
