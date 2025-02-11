@@ -13,7 +13,7 @@ const LogoutButton = () => {
   // Handle the user signing out
   useEffect(() => {
     if (!isSignedIn) {
-      addNotification("You have been logged out successfully.", "success"); // Show success toast
+      addNotification("You have been logged out successfully.", "success"); 
       router.push("/"); // Redirect to the home page
     }
   }, [isSignedIn, addNotification, router]);
