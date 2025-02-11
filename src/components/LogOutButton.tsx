@@ -8,18 +8,16 @@ import { useEffect } from "react"; // Import useEffect
 
 const LogoutButton = () => {
   const { isSignedIn } = useAuth();
-  const queryClient = useQueryClient();
   const router = useRouter(); // Initialize router
   const { addNotification } = useNotifications(); // Initialize notification context
 
   // Handle the user signing out
   useEffect(() => {
     if (!isSignedIn) {
-      queryClient.clear(); // Clear the query cache
       addNotification("You have been logged out successfully.", "success"); // Show success toast
       router.push("/"); // Redirect to the home page
     }
-  }, [isSignedIn, queryClient, addNotification, router]);
+  }, [isSignedIn, addNotification, router]);
 
   if (!isSignedIn) {
     return (
