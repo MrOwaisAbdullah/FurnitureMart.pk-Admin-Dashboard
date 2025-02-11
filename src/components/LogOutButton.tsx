@@ -33,7 +33,6 @@ const LogoutButton = () => {
         <LogOut className="h-5 w-5" />
         Log Out
       </button>
-      router.push("/"); // Redirect to home page
     </SignOutButton>
   );
 };
