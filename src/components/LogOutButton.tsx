@@ -4,19 +4,22 @@ import { useRouter } from "next/navigation"; // Import useRouter
 import { LogOut } from "lucide-react"; // Import Lucide icon
 import { useNotifications } from "@/context/NotificationContext"; // Import your notification context
 import { useEffect } from "react"; // Import useEffect
+import { useQueryClient } from "@tanstack/react-query";
 
 const LogoutButton = () => {
   const { isSignedIn } = useAuth();
   const router = useRouter(); // Initialize router
+  const queryClient = useQueryClient(); // Initialize query client
   const { addNotification } = useNotifications(); // Initialize notification context
 
   // Handle the user signing out
   useEffect(() => {
     if (!isSignedIn) {
       addNotification("You have been logged out successfully.", "success"); 
+      queryClient.clear(); // Clear the query cache
       router.push("/"); // Redirect to the home page
     }
-  }, [isSignedIn]);
+  }, [isSignedIn, addNotification,queryClient, router]);
 
   if (!isSignedIn) {
     return (
