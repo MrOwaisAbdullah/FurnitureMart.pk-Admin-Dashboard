@@ -16,8 +16,8 @@ const LogoutButton = () => {
   useEffect(() => {
     if (!isSignedIn) {
       // addNotification("You have been logged out successfully.", "success"); 
-      router.push("/"); // Redirect to the home page
       queryClient.clear(); // Clear the query cache
+      router.push("/"); // Redirect to the home page
     }
   }, [isSignedIn, queryClient, router]);
 
