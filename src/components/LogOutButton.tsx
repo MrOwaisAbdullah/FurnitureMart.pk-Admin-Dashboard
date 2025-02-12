@@ -17,8 +17,7 @@ const LogoutButton = () => {
     if (!isSignedIn) {
       // addNotification("You have been logged out successfully.", "success"); 
       queryClient.clear(); // Clear the query cache
-      router.refresh(); // Refresh the page
-      // router.push("/"); // Redirect to the home page
+      router.push("/"); // Redirect to the home page
     }
   }, [isSignedIn, queryClient, router]);
 
